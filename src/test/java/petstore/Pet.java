@@ -1,7 +1,6 @@
 package petstore;
 
 import org.testng.annotations.Test;
-import org.testng.annotations.TestInstance;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.contains;
@@ -21,7 +20,7 @@ public class Pet {
         return new String(Files.readAllBytes(Paths.get(caminhoJson)));
     }
 
-    @Test
+    @Test(priority = 1)
     public void incluirPet() throws IOException
     {
         String jsonBody = lerJson(PATH_PET_INCLUSAO);
@@ -41,7 +40,7 @@ public class Pet {
                 .body("tags.name",contains("sta"));
     }
 
-    @Test
+    @Test(priority = 2)
     public void consultarPet()
     {
         String IdEntity = "2018116017";
@@ -73,5 +72,19 @@ public class Pet {
                 .statusCode(200)
                 .body("name", is("Nino"))
                 .body("status", is("sold"));
+    }
+
+    @Test(priority = 4)
+    public void excluirPet() throws IOException {
+        String IdEntity = "2018116017";
+
+        given()
+                .contentType(CONTENT_TYPE)
+                .log().all()
+        .when()
+                .delete(URI_SWAGGER.concat("/").concat(IdEntity))
+        .then()
+                .log().all()
+                .statusCode(200);
     }
 }
